@@ -1,0 +1,1731 @@
+---
+title: "Introducción al estudio de la estructura social a partir de R"
+author: "José Rodríguez de la Fuente"
+institute: "Instituto de Investigaciones Gino Germani (UBA-CONICET)"
+format: 
+  revealjs:
+    theme: [moon, custom.scss]
+    highlight-style: espresso
+    chalkboard: 
+      boardmarker-width: 5
+    smooth-scroll: true
+from: markdown+emoji
+execute:
+  echo: true
+  cache: true
+---
+
+```{r echo=FALSE}
+knitr::opts_chunk$set(dev.args = list(png = list(type = "cairo")))
+```
+
+
+## Programa del taller
+
+::: incremental
+1.  ¿Qué es la estructura social?
+2.  ¿Por qué usar R?
+3.  Introducción (breve) a R
+4.  Trabajando con encuestas de hogares: EPH
+5.  Construyendo variables: las clases sociales
+6.  Explorando resultados. Tablas y gráficos
+7.  Dudas y consultas
+:::
+
+## Bibliografía recomendada
+
+-   [Sacco, Nicolás; José Rodríguez de la Fuente y Sofía Jaime (2022). Libro de Cocina para el Análisis de las Clases Sociales en Argentina.](https://nsacco.github.io/clases-arg/index.html)
+
+-   [Tiscornia, P. y Weksler, G. Introducción a R para Ciencias Sociales. Aplicación práctica en la EPH.](https://guidowe.github.io/Curso-R-Flacso/)
+
+# 1. ¿Qué es la estructura social? {background-color="#93a1a1"}
+
+## ¿Qué es la estructural social? (1)
+
+::: incremental
+-   [**Carácter temporal**]{style="color:#75E225"}: relaciones estables de la sociedad, regularidades de sus elementos constituyentes.
+
+-   [**Carácter plural**]{style="color:#75E225"}: designa los rasgos de grupos y sociedades, en otras palabras, que excede a los aspectos individuales.
+
+-   Puede abordarse desde diversas dimensiones: económica, social, política, etc.
+:::
+
+## ¿Qué es la estructural social? (2)
+
+::: incremental
+-   La [**estadística**]{style="color:#75E225"} es una disciplina central para el estudio de la estructura social
+    -   Da cuenta de la variabilidad de la vida social humana\
+    -   Permite dar cuenta de la regularidades poblacionales (junto con la teoría)
+-   Importancia en cómo los datos son *recogidos* y *analizados*
+:::
+
+## ¿Estructura social o estructura de clases?
+
+::: fragment
+Al hablar de clases hablamos de la estructura socio-económica [(aunque a veces se usen cómo sinónimos)]{.fragment .fade-in style="color:#75E225"}
+:::
+
+::: incremental
+::: columns
+::: {.column width="50%"}
+-   Existen distintos enfoques:
+    -   (neo)[marxista]{style="color:#75E225"}
+    -   (neo)[weberiano]{style="color:#75E225"}
+    -   Funcionalista
+    -   Bourdiano
+    -   Estadístico / pragmático
+:::
+:::
+:::
+
+::: fragment
+::: {.column width="50%"}
+::: {.absolute top="55%" left="55%"}
+::: {style="color: #cc0000"}
+::: {style="text-align: center"}
+**Todos deben poder ser operacionalizados** <br> :unamused:
+:::
+:::
+:::
+:::
+:::
+
+# 2. ¿Por qué usar `R`? {background-color="#93a1a1"}
+
+## Ventajas
+
+::: {.incremental}
+-   Código abierto: amplia cantidad de paquetes
+-   Es gratuito
+-   Gran comunidad de usuarios (foros)
+-   Uso extendido en la ciencia (sociales) y ámbito profesional
+-   Trabaja con la memoria virtual
+-   Capacidad de armar tableros, aplicaciones, documentos, etc.
+:::
+
+## Desventajas (1)
+
+::: {.incremental}
+-   Las órdenes deben darse por sintaxis [(no hay mucho *point and click*)]{style="color:#75E225"}\
+-   Hacer cosas *sencillas* y *rápidas* puede llevar más tiempo que en otros programas\
+-   La curva de aprendizaje es lenta
+:::
+
+## Desventajas (2)
+
+::: {.absolute top="10%" left="5%"}
+::: {style="text-align: center"}
+![](imagenes/1200px-Curva_de_aprendizaje.jpg)
+:::
+:::
+
+## Desventajas (3)
+
+::: {.absolute top="10%" left="5%"}
+::: {style="text-align: center"}
+![](imagenes/r_rollercoaster.png)
+:::
+:::
+
+## Comparaciones con otros programas
+
+::: {style="font-size: 0.55em"}
++--------------+----------------------+--------------------------+--------------------------+--------------------------+----------------+--------------------------------------------------------------------------------+
+| **Software** | **Interfaz**         | **Curva de aprendizaje** | **Manipulación de data** | **Análisis estadístico** | **Gráficos**   | **Especialidades**                                                             |
++==============+======================+==========================+==========================+==========================+================+================================================================================+
+| ***SPSS***   | **Menus & Sintaxis** | **Gradual**              | **Moderada**             | **Alcance moderado\      | **Buenos**     | **Tablas personalizadas, ANOVA & Análisis multivariado**                       |
+|              |                      |                          |                          | Baja versatilidad**      |                |                                                                                |
++--------------+----------------------+--------------------------+--------------------------+--------------------------+----------------+--------------------------------------------------------------------------------+
+| ***Stata***  | **Menus & Sintaxis** | **Moderado**             | **Fuerte**               | **Amplio alcance\        | **Buenos**     | **Análisis de panel, Análisis de encuesta & Imputación múltiple**              |
+|              |                      |                          |                          | Media versatilidad**     |                |                                                                                |
++--------------+----------------------+--------------------------+--------------------------+--------------------------+----------------+--------------------------------------------------------------------------------+
+| ***R***      | **Sintaxis**         | **Empinada**             | **Muy fuerte**           | **Muy amplio alcance\    | **Excelentes** | **Paquetes de gráficos, Web Scraping, Machine Learning & Predictive Modeling** |
+|              |                      |                          |                          | Alta versatilidad**      |                |                                                                                |
++--------------+----------------------+--------------------------+--------------------------+--------------------------+----------------+--------------------------------------------------------------------------------+
+
+Fuente: <https://sites.google.com/a/nyu.edu/statistical-software-guide/summary>
+:::
+
+## Ejemplos de usos de R en el ámbito público y académico  
+
+- [Tableros y reportes del SINTA ](https://tableros.yvera.tur.ar/)
+
+- [Tablero interactivo de indicadores sobre VIH, ITS, hepatitis virales y tuberculosis](https://www.argentina.gob.ar/salud/vih-its/tablero)
+
+- [Sacco, Nicolás; José Rodríguez de la Fuente y Sofía Jaime (2022). Libro de Cocina para el Análisis de las Clases Sociales en Argentina.](https://nsacco.github.io/clases-arg/index.html)
+
+
+# 3. Introducción (breve) a `R` {background-color="#93a1a1"}
+
+## Descarga e instalación
+
+::: {.incremental}
+
+1. Debemos instalar `R` desde [**CRAN** (the comprehensive R archive network)](https://cran.r-project.org/)  
+
+2. Debemos instalar [`RStudio`](http://www.rstudio.com/download)
+    + Es un ambiente de desarrollo integrado (IDE) para programar en `R` 
+    
+3. Recomendación de actualizar ambos programa periódicamente
+  
+:::
+
+## Partes de RStudio
+
+::: {style="text-align: center"}
+![](imagenes/Rstudio.png)
+:::
+
+. . .
+
+::: {.absolute top="60%" left="65%"}
+::: {style="color: #EE0E0E"}
+**Archivos del proyecto**
+:::
+:::
+
+. . .
+
+::: {.absolute top="30%" left="60%"}
+::: {style="color: #EE0E0E"}
+**Ambiente de trabajo**
+:::
+:::
+
+
+. . .
+
+::: {.absolute top="70%" left="20%"}
+::: {style="color: #EE0E0E"}
+**Consola**
+:::
+:::
+
+. . .
+
+::: {.absolute top="40%" left="15%"}
+::: {style="color: #EE0E0E"}
+**Script o sintaxis**
+:::
+:::
+
+## ¿Cómo hacer funcionar `R`?  
+
+:::{.incremental}
+
+- Mediante `R base`: [comandos y funciones básicas que ya vienen incorporadas en el programa]{.fragment .fade-in}  
+
+- Mediante [**paquetes**]{style="color:#75E225"}:
+  + Conjunto de comandos y funciones elaborados por usuarios
+  + Facilitan el trabajo
+
+:::
+
+::: fragment
+::: {.absolute bottom="5%" right="2%" width="600" height="300"}
+![](imagenes/R_packages.png)
+:::
+:::
+
+## ¿Cómo instalar y hacer funcionar los paquetes?
+
+::: {.incremental}
+
+- Los paquetes se instalan via descarga de internet
+- La operación se hace directamente desde la consola o script de `RStudio`
+
+:::
+
+::: fragment
+
+```{r eval=FALSE}
+install.packages("tidyverse")
+```
+:::
+
+. . .
+
+- Siempre que necesitemos usar un paquete debemos *activarlo*  
+
+. . .
+```{r eval=FALSE}
+library(tidyverse)
+```
+
+
+## Flujo de trabajo: *Dinámica*
+
+::: {layout-ncol=2}
+![Fuente: Wickham and Grolemund, 2016](imagenes/data-science.png)
+
+![Fuente: https://teachdatascience.com/tidyverse/](imagenes/tidyverse-package-workflow.png)
+:::
+
+
+## Flujo de trabajo: *Proyectos*
+
+:::: {.columns}
+
+::: {.column width="45%"}
+::: {.incremental}
+- Siempre es recomendable trabajar dentro de un proyecto
+- Nos aseguraremos que todos los archivos y carpetas necesarios estén siempre en un lugar único
+- Trabajaremos con rutas relativas.
+:::
+:::
+::::
+
+::: {.fragment}
+![](imagenes/proyecto.png){.absolute top="25%" right="0%" width=50%}
+:::
+
+## Flujo de trabajo: *Objetos (1)*
+
+::: fragment
+[Todo]{style="color:#75E225"} lo que creemos en `R` es un objeto. Y en esto `R` es totalmente distinto a lo que conocíamos. 
+:::
+
+. . .
+
+<br>
+
+```{r}
+objeto <- "Yo soy un objeto"
+```
+
+. . .
+
+
+![](imagenes/objeto.png){width=70%}
+
+
+## Flujo de trabajo: *Objetos (2)*
+
+Podemos crear objetos a partir de:
+
+. . . 
+
+**Números**
+```{r}
+numeros <- 5625
+```
+
+. . .
+
+**Palabras**
+```{r}
+Palabras <- "¡Hola amigos!"
+```
+
+. . .
+
+**Vectores**
+```{r}
+vector <- c(4,5,6,7,8)
+```
+
+. . .
+
+Listas, *data frames*, gráficos, funciones, mapas y muchas cosas más.
+
+. . .
+
+::: {.fragment .fade-in}
+![](imagenes/objetos2.png){.absolute top="20%" right="0%" width=65%}
+:::
+
+
+## Flujo de trabajo: *Elementos del script (caracteres especiales)*
+
+. . . 
+
+- **De asignación** (`<-` o `=`): [le asignan un valor a un objeto]{.fragment .fade-in}.  
+
+. . .
+
+- **De anotación** (`#`): [permite escribir anotación en el script que no son leídas como código]{.fragment .fade-in}
+
+::: incremental
+
+- **Pipa** (` %>% `): [permite concatenar una secuencia de acciones sobre un objeto]{.fragment .fade-in}
+    + Pertenece al paquete `dplyr` que está en `tidyverse`
+    
+:::
+
+
+## Flujo de trabajo: *Elementos del script (operadores)*
+
+. . .
+
+::::: {.columns}
+
+:::: {.column width="33%"}
+
+[Operadores aritméticos]{style="color:#75E225"} 
+
+:::{.fragment}
+
+- `+` Suma
+- `-` Resta
+- `*` Multiplicación
+- `/` División 
+
+:::
+::::
+
+
+:::: {.column width="33%"}
+
+[Operadores relacionales]{style="color:#75E225"} 
+
+:::{.fragment}
+:::{style="font-size: 0.80em"}
+
+- `>` Mayor
+- `>=` Mayor o igual
+- `<` Menor
+- `<=` Menor o igual
+- `==` Igual
+- `!=` Distinto
+
+:::
+:::
+::::
+
+:::: {.column width="33%"}
+
+[Operadores lógicos]{style="color:#75E225"} 
+
+:::{.fragment}
+
+- `&` y
+- `|` ó
+
+:::
+::::
+
+:::::
+
+## Flujo de trabajo: *Objetos (3)*
+
+:::{.fragment}
+
+Existe una *clase* especial de vector denominado [factor]{style="color:#75E225"} 
+
+:::
+
+::: incremental
+:::{style="font-size: 0.80em"}
+- Suelen ser utilizados como variables categóricas (nominales u ordinales)
+- Tienen un conjunto fijo y conocido de valores que puede asumir
+- Se suelen construir a partir de vectores de cadena
+:::
+:::
+
+. . .
+
+<br>
+
+```{r}
+clases_sociales <- c("alta", "media", "baja", "baja", "media", "media", "baja")
+clases_factor <- factor(clases_sociales, levels = c("baja", "media", "alta"))
+
+table(clases_factor)
+```
+
+
+## Principales funciones de `dplyr`
+
+::: incremental
+- [Filter]{style="color:#75E225"}: filtrado de filas o casos
+- [Select]{style="color:#75E225"}: selección de columnas o variables
+- [Arrange]{style="color:#75E225"}: ordena los casos de una variable(s)
+- [Count]{style="color:#75E225"}: cuenta casos
+- [Mutate]{style="color:#75E225"}: crea nuevas columnas o variables
+- [Group_by / summarize]{style="color:#75E225"}: agregan casos por variable
+:::
+
+
+# 4. Trabajando con encuestas de hogares: EPH. {background-color="#93a1a1"}
+
+## La Encuesta Permanente de Hogares (I)
+
+::: incremental
+- Programa nacional de producción sistemática y permanente de indicadores sociales que lleva a cabo el **INDEC**.
+- Comenzó a aplicarse desde 1973, bajo una modalidad (puntual) que implicaba un doble relevamiento anual (mayo y octubre).
+- Actualmente cubre a 31 aglomerados del país y se realiza bajo una modalidad continua. 
+:::
+
+## La Encuesta Permanente de Hogares (II)
+
+::: incremental
+- Las principales dimensiones relevadas son:
+    + situación laboral :factory:
+    + características demográficas básicas :mens: :womens: :womens:
+    + migración :earth_americas:
+    + características habitacionales :house_with_garden:
+    + educación :mortar_board:
+    + ingresos :money_with_wings: :money_with_wings:
+- Presenta un diseño de **tipo panel** (2-2-2).
+:::
+
+## ¿Por qué usar la **EPH** para estudiar la estructura de clases?
+
+::: incremental
+- Medición precisa de [variables laborales]{style="color:#75E225"}
+    + Ocupación, rama de actividad, sector de actividad, categoría ocupacional, tamaño del establecimiento, etc. 
+- Relevamiento [continuo y generalizado]{style="color:#75E225"}
+    + Información desde 1974
+    + Incorporación de aglomerados con el paso del tiempo
+- Relevamiento de [otras dimensiones]{style="color:#75E225"} relevantes
+:::
+
+
+## Las bases de microdatos
+
+. . .
+
+Dependiendo del período que necesitemos analizar, encontraremos que las bases a descargar se encuentran en distintos formatos de archivo. 
+
+::: incremental
+- 1974-2002 :arrow_forward: :arrow_forward: .dbf :arrow_forward: :arrow_forward: `foreign`
+- 2003-2015 :arrow_forward: :arrow_forward: .sav .dta .xls :arrow_forward: :arrow_forward: `haven`
+- 2016-2022 :arrow_forward: :arrow_forward: .txt :arrow_forward: :arrow_forward: `R base`
+:::
+
+. . .
+
+Vamos a probar descargar e importar la base más reciente
+
+
+## Importando los microdatos (I)
+
+::: incremental
+- Descargar desde el sitio web de [INDEC](https://www.indec.gob.ar/indec/web/Institucional-Indec-BasesDeDatos) la última base disponible.
+- Guardar el archivo en la carpeta `bases` del proyecto.
+- Importar la base con la función `read.csv2`
+:::
+
+. . .
+
+```{r}
+eph_03_22 <- read.csv2("bases/usu_individual_T322.txt", header = T)
+```
+
+. . .
+
+
+¿Cuántos registros y variables tenemos?
+```{r}
+nrow(eph_03_22)
+ncol(eph_03_22)
+```
+
+
+## Importando los microdatos (II){.smaller}
+
+
+```{r echo=F}
+rmarkdown::paged_table(eph_03_22) 
+```
+
+
+## El paquete `eph`(I)
+
+::: incremental
+- Creado por usuaries de la **EPH**: [https://holatam.github.io/eph/](https://holatam.github.io/eph/)
+- Permite: 
+    + descargar fácilmente las bases de datos
+    + etiquetar variables y categorías
+    + organizar pools de datos en panel
+    + estimar tasas de pobreza
+:::
+
+## El paquete `eph`: funciones básicas
+
+:::{style="font-size: 0.75em"}
+:::fragment
+
+Vamos a activar el paquete `eph` y a descargar la base de individuos del 4to trimestre de 2019 utilizando la función `get_microdata`. 
+
+:::
+
+:::fragment
+
+```{r}
+library(eph)
+eph_ind_419 <- get_microdata(year = 2019, trimester = 4, type = "individual")
+```
+
+:::
+
+<br>
+
+:::fragment
+
+Podemos etiquetar las variables y categorías automáticamente con la función `organize_labels`.
+
+:::
+
+:::fragment
+
+```{r}
+eph_ind_419 <- organize_labels(eph_ind_419, type = 'individual')
+```
+
+:::
+
+<br>
+
+:::fragment
+Observamos las etiqueteas de la variable **sexo**
+:::
+
+::: {.columns}
+::: {.column width="35%"}
+:::fragment
+```{r eval=FALSE}
+attributes(eph_ind_419$CH04)
+
+```
+:::
+:::
+
+:::{.column width="65%"}
+:::fragment
+```{r echo=F}
+attributes(eph_ind_419$CH04)
+
+```
+
+:::
+:::
+:::
+:::
+
+```{r include=FALSE, message=FALSE, warning=FALSE}
+eph_ind_419 <- get_microdata(year = 2019, trimester = 4, type = "individual")
+```
+
+
+## Primeros pasos con la **EPH**: unión de bases (I)
+
+::::{style="font-size: 0.85em"}
+
+::: incremental
+- Es frecuente que en el estudio de la estructura social debamos combinar el uso de información [individual]{style="color:#75E225"} y de [hogares]{style="color:#75E225"}
+- Para ello debemos unir las bases
+- Debemos identificar a las variables **CODUSU** y **NRO_HOGAR** para poder realizar la unión entre ambas bases
+- Siempre es recomendable unir únicamente las variables que necesitamos
+:::
+
+:::fragment
+
+Pero primero... debemos descargar la base de hogares del 4to trimestre de 2019:
+
+:::
+
+:::fragment
+```{r}
+eph_hog_419 <- get_microdata(year = 2019, trimester = 4, type = "hogar",
+                             vars = c("CODUSU", "NRO_HOGAR", "II7", "II1", "IX_TOT"))
+
+```
+:::
+::::
+
+## Primeros pasos con la **EPH**: unión de bases (II)
+
+. . .
+
+Ahora si estamos en condiciones de unir ambas bases
+
+. . .
+
+Para ello vamos a utilizar la función *left_join* del paquete `dplyr` que se encuentra en el `tidyverse`  
+
+. . .
+
+<br>
+
+:::{.columns}
+:::{.column width="40%"}
+
+```{r}
+#| code-line-numbers: "|4"
+#| 
+library(tidyverse)
+
+eph_419 <- eph_ind_419 %>% 
+  left_join(eph_hog_419, by=c("CODUSU", "NRO_HOGAR"))
+```
+
+:::
+
+
+:::{.column width="60%"}
+:::{style="font-size: 0.40em"}
+
+```{r echo=F}
+rmarkdown::paged_table(eph_419)
+```
+
+:::
+:::
+:::
+
+
+## Primeros pasos con la **EPH**: filtrado
+
+::: incremental
+- Casi siempre es necesario seleccionar una porción de nuestra muestra
+- Se aplican filtros por región, período, sexo, edad, situación laboral
+- Para ello utilizaremos la función [*filter*]{style="color:#75E225"} del `tidyverse`
+:::
+
+. . .
+
+Seleccionaremos el aglomerado de Mar del Plata - Batán (34) y observamos la cantidad de casos con [*nrow*]{style="color:#75E225"}
+
+. . . 
+
+```{r}
+#| code-line-numbers: "|2|4"
+eph_419_mdp <- eph_419 %>% 
+  filter(AGLOMERADO == 34)
+
+nrow(eph_419_mdp)
+```
+
+
+## Ponderación de la muestra
+
+::::{style="font-size: 0.70em"}
+:::{.incremental}
+- Debido a que estamos trabajando con una muestra probabilística y representativa de la población es necesario **ponderar** los datos
+- Esto permite
+    + Recalibrar la muestra salvando errores de sobre o subrepresentación
+    + Expandir el número efectivo de casos al número total poblacional
+- Esto debe hacerse cada vez que realizamos un procesamiento (no es como SPSS) y dependerá de que operación debamos realizar (suma, promedio, tabulado, regresión, etc.)
+- Existencia de distintos ponderadores: PONDERA, PONDIIO, PONDII, PONDIH
+:::
+
+:::fragment
+
+Probemos calcular el total poblacional de Mar del Plata - Batán
+
+:::
+::::
+
+:::{.fragment}
+
+```{r}
+#| output-location: column-fragment
+#| code-line-numbers: "|2"
+
+eph_419_mdp %>% 
+  tally(PONDERA)
+```
+
+:::
+
+. . .
+
+::: {.absolute top="80%" right="20%" width="300"}
+::: {.blackbox}
+:::
+:::
+
+
+# 5. Construyendo variables: las clases sociales {background-color="#93a1a1"}
+
+## Las características socio-laborales  
+
+:::{style="font-size: 0.80em"}
+:::incremental
+- Los esquemas de clases sociales son *operacionalizaciones* de las teorías de clases.
+- Los elementos centrales para su contrucción son las *variables*
+:::
+:::
+
+:::fragment
+
+```{r echo=FALSE, fig.align='center', out.width = '80%', warning=FALSE, message=FALSE}
+
+library(knitr)
+library(kableExtra)
+
+
+variables_eph <- data.frame(c1 = c("Condición de actividad", "Categoría ocupacional",
+                                   "Ocupación", "Rama de actividad", "Tamaño del establecimiento"),
+                            c2 = c("Población activida o inactiva", 
+                                   "Estatus jerárquico en el empleo", "Código de ocupación",
+                                   "Sector industrial de la ocupación", 
+                                   "Tamaño del establecimiento del trabajo"),
+                            c3 = c("ESTADO", "CAT_OCUP", 
+                                   "PP04D_COD (ocupación actual) / PP11D_COD (ocupación anterior)",
+                                   "PP04B_COD (ocupación actual) / PP11B_COD (ocupación anterior)",
+                                   "PP04C / PP04c_99"),
+                            c4 = c("Ocupado / Desocupado / Inactivo / Menor de 10 años",
+                                   "Patrón / Cuenta propia / Empleado / Trabajador familiar",
+                                   "Ver Clasificador Nacional de Ocupaciones (CNO)", 
+                                   "Ver Clasificador de Actividades Económicas para Encuestas Socio-demográficas del Mercosur (CAES - MERCOSUR)", "Numérica"))
+                                   
+variables_eph %>% 
+  kbl(col.names = c("Variable", "Descripción", "Etiqueta", "Categorías"), caption = "Principales variables socio-ocupacionales de la EPH") %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), font_size = 18) %>% 
+  kableExtra::footnote(general = "Fuente: elaboración propia") 
+
+
+```
+
+:::
+
+
+## Condición de actividad
+
+. . .
+
+Permite distinguir entre personas económicamente activas (**PEA**) y no económicamente activas (**PNEA**)
+
+<br>
+
+. . .
+
+```{r}
+#| output-location: fragment
+table(eph_419$ESTADO)
+```
+
+## Ocupación (I)
+
+::: {style="font-size: 0.8em"}
+:::incremental
+- **INDEC** utiliza el Clasificador Nacional de Ocupaciones
+- Este se compone de 5 dígitos
+:::
+:::
+
+:::fragment
+![](imagenes/cno.png){fig-align="center" width=55%}
+:::
+
+## Ocupación (II)
+
+. . .
+
+```{r}
+#| output-location: fragment
+table(eph_419$PP04D_COD)
+```
+
+
+## Categoría ocupacional
+
+. . .
+
+Permite discriminar a la población en función de su posicionamiento en las relaciones de producción y a partir del origen de sus ingresos
+
+. . .
+
+<br>
+
+```{r}
+#| output-location: fragment
+table(eph_419$CAT_OCUP)
+```
+
+
+## De las clases en el papel a las clases en la computadora
+
+::: {style="font-size: 0.8em"}
+::: incremental
+-  La *operacionalización* implica el pasaje de conceptos teórico-abstractos a indicadores empíricos.
+
+- Estas clases-constructos no son clases equiparables a las que podemos percibir y comprender como existentes en la realidad social, aunque presenten probabilidades de serlo.
+
+- El proceso de *operacionalización* implica una abstracción y un recorte realizado sobre la realidad.
+
+- Confusión de la noción de [clase]{style="color:#75E225"} con otros conceptos: estratos, grupos, sectores, fracciones. 
+
+- Hay varias propuestas teóricas de la estratificación que fueron operacionalizadas: EGP, Wright, SIOPS, SEI, ISEI, Germani, [Torrado]{.fragment .highlight-red}, Portes, etc. 
+
+:::
+:::
+
+## El esquema de clases de Torrado
+
+. . .
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.cap="Sistema clasificatorio de la clase social"}
+library(flextable)
+
+torrado3 <- data.frame(c1 = c("Clase alta", "Clase media", "Clase media", "Clase media",
+                              "Clase media", "Clase media", "Clase media", "Clase obrera", "Clase obrera",
+                              "Clase obrera", "Clase obrera", "Clase obrera"),
+                       c2 = c("-", "Autónomos", "Autónomos", "Autónomos", "Asalariados", "Asalariados",
+                              "Asalariados", "Autónomos", "Asalariados", "Asalariados", "Marginales",
+                              "Marginales"),
+                       c3 = c("Directores de empresa", "Profesionales en función específica",
+                              "Propietarios de pequeñas empresas", "Pequeños productores autónomos",
+                              "Profesionales en función específica", "Cuadros técnicos y asimilados",
+                              "Empleados administrativos y vendedores", 
+                              "Trabajadores especializados autónomos", "Obreros calificados",
+                              "Obreros no calificados", "Peones autónomos", "Empleados domésticos"))
+                      
+                                   
+torrado3 %>% 
+  flextable() %>% 
+  set_table_properties(width = .7, layout = "autofit") %>%
+  set_header_labels(c1 = "Clase social", c2 = "Estratos sociales", c3 = "Estratos sociales") %>% 
+  merge_v(j = 1:2) %>% 
+  merge_h(i = 1) %>% 
+  align(part = "header", align = "center") %>% 
+  align(j = 1:2, align = "center") %>% 
+  bold(part = "header") %>% 
+  add_footer_row(values = "Fuente: elaboración propia en base a Torrado (1998)",
+                 colwidths = 3) %>% 
+  fontsize(part = "all", size = 16) %>% 
+  border(part = c("header"), border = officer::fp_border(color = "white")) %>% 
+  border(part = c("body"), border = officer::fp_border(color = "white")) %>% 
+  color(color = "white", part = "all")
+
+```
+
+
+## [Paso 1]{style="color:#75E225"}: Punto de partida 
+
+::: {.fragment}
+::: {.fragment .semi-fade-out}
+
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.cap= "Clasificador de la Condición Socio-ocupacional (CSO)"}
+torrado4 <- data.frame(c1 = c("Grupo de ocupación",
+                              "Grupo de ocupación",
+                              "Grupo de ocupación",
+                              "1. Empresarios, directores de empresas y funcionarios públicos superiores",
+                              "2. Propietarios de establecimientos",
+                              "3. Profesionales en función específica",
+                              "4. Técnicos, docentes y supervisores",
+                              "5. Empleados y vendedores",
+                              "6. Trabajadores especializados",
+                              "7. Trabajadores no especializados",
+                              "8. Empleados domésticos",
+                              "9. Sin especificar"),
+                       c2 = c("Empleadores", "Sector privado", "Más de 5 ocupados",
+                              "1.1", "3", "2.1.1", "3", "3", "3", "10", "11", "12"),
+                       c3 = c("Empleadores", "Sector privado", "Hasta 5 ocupados",
+                              "5.1", "5.1", "2.1.2", "5.1", "5.1", "5.1", "10", "11", "12"),
+                       c4 = c("Asalariados", "Sector privado", "Más de 5 ocupados",
+                              "1.2", "4.1.1", "2.3.1", "4.1.1", "6.1.1", "8.1.1", "9.1.1", "11", "12"),
+                       c5 = c("Asalariados", "Sector privado", "Hasta 5 ocupados",
+                              "4.1.2", "4.1.2", "2.3.2", "4.1.2", "6.1.2", "8.1.2", "9.1.2", "11", "12"),
+                       c6 = c("Asalariados", "Sector público", "Sector público",
+                              "1.1*", "4.2", "2.4", "4.2", "6.2", "8.2", "9.2", "11", "12"),
+                       c7 = c("Servicio doméstico", "Servicio doméstico", "Servicio doméstico",
+                              "11", "11", "11", "11", "11", "11", "11", "11", "12"),
+                       c8 = c("Cuenta propia y familiar sin remuneración",
+                              "Cuenta propia y familiar sin remuneración", 
+                              "Cuenta propia y familiar sin remuneración", 
+                              "5.2", "5.2", "2.2", "5.2", "5.2", "7", "10", "11", "12"))
+                      
+                                   
+torrado4 %>% 
+  flextable() %>% 
+  set_table_properties(width = 1, layout = "autofit") %>%
+  delete_part(part = "header") %>%
+  merge_v(j = 1:8) %>% 
+  merge_h(i = 1) %>% 
+  align(i = 1:3, align = "center") %>% 
+  align(j = 2:8, align = "center") %>% 
+  bold(i = 1:3) %>% 
+  add_footer_row(values = "* Modificación respecto a la propuesta de Torrado. Fuente: elaboración propia en base a Torrado (1998)",
+                 colwidths = 8) %>% 
+  fontsize(part = "all", size = 12) %>% 
+  border(part = "body", border = officer::fp_border(color = "white")) %>% 
+  color(color = "white", part = "all")
+
+```
+
+:::
+:::
+
+. . . 
+
+::: {.absolute top="22%" left="3%"}
+::: {style="color: #75E225"}
+**1. Ocupación**
+:::
+:::
+
+. . .
+
+::: {.absolute top="5%" left="50%"}
+::: {style="color: #75E225"}
+**2. Categoría de ocupación**
+:::
+:::
+
+. . .
+
+::: {.absolute top="15%" left="30%"}
+::: {style="color: #75E225"}
+**3. Sector de actividad**
+:::
+:::
+
+. . .
+
+::: {.absolute top="30%" left="28%"}
+::: {style="color: #75E225"}
+**4. Tamaño del establecimiento**
+:::
+:::
+
+## [Paso 2]{style="color:#75E225"}: Ocupación (I) 
+
+::: {style="font-size: 0.70em"}
+:::incremental
+- Debemos preparar las variables para poder trabajarlas en la operacionalización.
+
+- En primer lugar empezaremos por agregar ceros a los registros que tienen menos de 5 dígitos, utilizando la función **str_pad** del `tidyverse`.
+
+- Luego vamos a separar los 5 dígitos del **CNO**. Para ello utilizaremos la función **str_sub** del `tidyverse`.
+
+- Luego convertiremos esas variables en formato numérico.
+:::
+:::
+
+:::fragment
+```{r}
+#| code-line-numbers: "|1|3-6|8-11|"
+
+eph_419$cno <- str_pad(eph_419$PP04D_COD, 5, pad = "0")
+
+eph_419$cno12 <- str_sub(eph_419$cno, 1, 2) #señala que parta de la posición 1 hasta 2 del código
+eph_419$cno3 <- str_sub(eph_419$cno, 3, 3) #señala que parta de la posición 3 a la 3 del código
+eph_419$cno4 <- str_sub(eph_419$cno, 4, 4)
+eph_419$cno5 <- str_sub(eph_419$cno, 5, 5)
+
+eph_419$cno12 <- as.numeric(eph_419$cno12)
+eph_419$cno3 <- as.numeric(eph_419$cno3)
+eph_419$cno4 <- as.numeric(eph_419$cno4)
+eph_419$cno5 <- as.numeric(eph_419$cno5)
+```
+
+:::
+
+
+## [Paso 2]{style="color:#75E225"}: Ocupación (II)
+
+::: {style="font-size: 0.8em"}
+:::incremental
+- Crearemos una variable que permita agrupar a las ocupaciones del mismo modo que lo hizo Torrado.
+
+- Para esto generaremos la variable **grupo de ocupación** (GO), utilizando los dos primeros dígitos del CNO.
+
+- A través de la función *case_when* del `tidyverse` podremos asignarle un valor a la variable en la medida que se cumplan determinadas condiciones
+:::
+:::
+
+:::fragment
+```{r}
+#| class-source: code_1
+#| classes: code_1
+
+eph_419 <- eph_419 %>%  
+  mutate(go = case_when((cno12 >= 0 & cno12 <=4) | (cno12 == 7) ~ 1,
+                        
+                        (cno12 >= 5 & cno12 <=6) ~ 2,
+                        
+                        (cno5 == 1) & ((cno12 >= 10 & cno12 <= 20) | 
+                        (cno12 == 32) | (cno12 >= 34 & cno12 <= 40) |
+                        (cno12 >= 42 & cno12 <= 47) | (cno12 >= 49 & cno12 <= 54) | 
+                        (cno12 >= 60 & cno12 <= 64) | (cno12 >= 70 & cno12 <= 92)) ~ 3,
+                        
+                        (cno5 > 4) & (cno12 == 11 | cno12 == 42 | cno12 == 43 | 
+                        cno12 == 50 | cno12 == 70 | cno12 == 81 | cno12 == 91) ~ 3,
+                        
+                        (cno5 == 2) & ((cno12 >= 10 & cno12 <= 32) | (cno12 >= 34 & cno12 <= 54) | 
+                        (cno12 >= 56 & cno12 <= 92)) ~ 4,
+                        
+                        (cno5 == 1) & ((cno12 == 30 | cno12 == 31 | cno12 == 41 | cno12 == 48) | 
+                        (cno12 >= 56 & cno12 <= 58) | (cno12 == 65)) ~ 4,
+                        
+                        (cno5 == 3) & (cno12 == 40 | cno12 == 42 | cno12 == 43 | cno12 == 45 | 
+                        cno12 == 91) ~ 4,
+                        
+                        (cno5 == 4) & (cno12 == 42 | cno12 == 43 | cno12 == 45) ~ 4,
+                        
+                        (cno5 > 4) & (cno12 == 40 | cno12 == 41 | cno12 == 44 | cno12 == 45 | 
+                        cno12 == 46 | cno12 == 51 | cno12 == 92) ~ 4,
+                        
+                        (cno5 == 3) & ((cno12 >= 10 & cno12 <= 32) | (cno12 == 35) | (cno12 == 41) | 
+                        (cno12 == 54) | (cno12 == 81)) ~ 5,
+                        
+                        (cno5 == 4) & ((cno12 >= 10 & cno12 <= 11) | (cno12 >= 30 & cno12 <= 32) | 
+                        (cno12 == 35)) ~ 5,
+                        
+                        (cno5 > 4) & ((cno12 == 10) | (cno12 >= 20 & cno12 <= 32) | (cno12 == 35)) ~ 5,
+                        
+                        (cno5 == 1 | cno5 == 2) & (cno12 == 55) ~ 6,
+                        
+                        (cno5 == 3) & ((cno12 == 34) | (cno12 == 36) | (cno12 == 44) | 
+                        (cno12 >= 46 & cno12 <= 53) | (cno12 >= 55 & cno12 <= 80) | 
+                        (cno12 == 82) | (cno12 == 90) | (cno12 == 92)) ~ 6,
+                        
+                        (cno5 == 4) & ((cno12 == 44) | (cno12 == 49) | (cno12 == 53) | (cno12 == 57)) ~ 6,
+                        
+                        (cno5 > 4) & ((cno12 == 34) | (cno12 >= 47 & cno12 <= 49) | (cno12 >= 52 & cno12 <= 54) | (cno12 >= 57 & cno12 <= 65) | (cno12 >= 71 & cno12 <= 80) | (cno12 >= 82 & cno12 <= 90)) ~ 6,
+                        
+                        (cno12 == 33)   ~ 7,
+                        
+                        (cno5 == 4 | cno5 == 9) & ((cno12 == 20) | (cno12 == 34) | 
+                        (cno12 >= 36 & cno12 <= 41) | (cno12 >= 46 & cno12 <= 48) |
+                        (cno12 >= 50 & cno12 <= 52) | (cno12 == 54) | (cno12 == 56) | 
+                        (cno12 >= 58 & cno12 <= 92)) ~ 7,
+                        
+                        (cno5 >= 4) & (cno12 == 55) ~ 8
+                        
+                        ,(cno12 == 99) | (is.na(cno12)) ~ 9))
+```
+
+:::
+
+## [Paso 3]{style="color:#75E225"}: Sector de actividad y tamaño del establecimiento
+
+::: {style="font-size: 0.8em"}
+:::incremental
+- Vamos a recodificar dichas variables utilizando la función **recode** del paquete  `car`.
+
+- El sector de actividad (*pp04a*) quedará recodificado en 1) *sector privado* y 2) *sector público*.
+
+- El tamaño del establecimiento (*pp04c* y *pp04c99*) quedará recodificado en 1) *5 o menos ocupados* y 2) *Más de 5 ocupados*.
+:::
+:::
+
+:::fragment
+```{r}
+#| code-line-numbers: "|1-2|4-7|"
+eph_419 <- eph_419 %>% 
+    mutate(sector_act = car::recode(eph_419$PP04A, "1=2; 2:3=1")) 
+
+eph_419 <- eph_419 %>% 
+  mutate(tamano = case_when((PP04C > 0 & PP04C <= 5) | (PP04C == 99 & PP04C99 == 1) ~ 1,
+                            (PP04C > 5 & PP04C < 99) | (PP04C == 99 & PP04C99 >= 2) ~ 2,
+                            PP04C == 0 | PP04C99 == 0 ~ NA_real_
+                            )) 
+```
+
+:::
+
+
+## [Paso 4]{style="color:#75E225"}: Creación del CSO desagregado (I)
+
+. . .
+
+Con las variables necesarias ya creadas y/o recodificadas, podemos empezar a *llenar los casilleros* del cuadro anteriormente presentado.
+
+. . .
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+torrado5 <- data.frame(c1 = c(1:27),
+                       c2 = c("1.1", "1.2", "2.1.1", "2.1.2", "2.2", "2.3.1", "2.3.2",
+                              "2.4", "3", "4.1.1", "4.1.2", "4.2", "5.1", "5.2", 
+                              "6.1.1", "6.1.2", "6.2", "7", "8.1.1", "8.1.2", "8.2",
+                              "9.1.1", "9.1.2", "9.2", "10", "11", "12"),
+                       c3 = c("DIREC (ER - SPR. TE>5)", "DIREC (AS - SPR. TE>5)",
+                              "PROF (ER- SPR. >5)", "PROF (ER- SPR. <=5)",
+                              "PROF (CP)", "PROF (AS- SPR. >5)", 
+                              "PROF (AS- SPR. <=5)", "PROF (AS- SPU)", "PPE", 
+                              "TECN (AS -SPR. TE>5)", "TECN (AS -SPR. TE<=5)", "TECN (AS -SPU)",
+                              "PPA (ER - SPR. TE <=5)", "PPA (CP)", "EAV (AS - SPR. TE>5)",
+                              "EAV (AS - SPR. TE<=5)", "EAV (AS - SPU)", "TEA", 
+                              "OCAL (AS - SPR. TE>5)", "OCAL (AS - SPR. TE<=5)", 
+                              "OCAL (AS - SPU)", "ONCAL (AS - SPR. TE>5)", "ONCAL (AS - SPR. TE<=5)",
+                              "ONCAL (AS - SPU)", "TMARG", "EDOM", "Sin especificar CSO"),
+                       c4 = c("1", "1", "2", "2", "2", "2", "2", "2", "3", "4", "4", "4", "5",
+                              "5", "6", "6", "6", "7", "8", "8", "8", "9", "9", "9", "10", "11",
+                              "12"))
+                      
+                                   
+torrado5 %>% 
+  kbl(col.names = c("Nº sintaxis", "Nº real", "CSO desagregado", 
+                    "CSO agregado"), caption = "Asignación de códigos al CSO desagregado", align = "c") %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), font_size = 16) %>% 
+  collapse_rows(columns = 4, valign = "middle") %>% 
+  kableExtra::footnote(general = "Fuente: elaboración propia en base a Torrado (1998)") %>% 
+  scroll_box(width = "100%", height = "450px")
+  
+
+```
+
+## [Paso 4]{style="color:#75E225"}: Creación del CSO desagregado (II)
+
+. . .
+
+Crearemos una variable que se llame **cso_desag**
+
+. . .
+
+```{r}
+#| code-line-numbers: "|2|14|"
+eph_419 <- eph_419 %>% 
+  mutate(cso_desag = case_when(go==1 & CAT_OCUP==1 & tamano==2 ~ 1, 
+                               go==1 & CAT_OCUP==1 & tamano==1 ~ 13, 
+                               go==1 & CAT_OCUP==3 & sector_act==1 & tamano==2 ~ 2, 
+                               go==1 & CAT_OCUP==3 & sector_act==1 & is.na(tamano) ~ 2, 
+                               go==1 & CAT_OCUP==3 & sector_act==1 & tamano==1 ~ 11, 
+                               go==1 & CAT_OCUP==3 & sector_act==2 ~ 1,
+                               go==1 & CAT_OCUP==2 ~ 14,
+                               go==1 & CAT_OCUP==4 ~ 14,
+                               go==1 & CAT_OCUP==NA ~ 14,
+                               
+                               go==2 & CAT_OCUP==1 & tamano==2 ~ 9,
+                               go==2 & CAT_OCUP==1 & tamano==1  ~ 13,
+                               go==2 & CAT_OCUP==3 & sector_act==1 & tamano==2 ~ 10,
+                               go==2 & CAT_OCUP==3 & sector_act==1 & is.na(tamano) ~ 10,
+                               go==2 & CAT_OCUP==3 & sector_act==1 & tamano==1  ~ 11,
+                               go==2 & CAT_OCUP==3 & sector_act==2  ~ 12,
+                               go==2 & CAT_OCUP==2  ~ 14,
+                               go==2 & CAT_OCUP==4  ~ 14,
+                               go==2 & CAT_OCUP==NA     ~ 14,
+         
+                               go==3 & CAT_OCUP==1 & tamano==2 ~ 3,
+                               go==3 & CAT_OCUP==1 & tamano==1 ~ 4,
+                               go==3 & CAT_OCUP==3 & sector_act==1 & tamano==2 ~ 6,
+                               go==3 & CAT_OCUP==3 & sector_act==1 & is.na(tamano) ~ 6,
+                               go==3 & CAT_OCUP==3 & sector_act==1 & tamano==1  ~ 7,
+                               go==3 & CAT_OCUP==3 & sector_act==2 ~ 8,
+                               go==3 & CAT_OCUP==2 ~ 5,
+                               go==3 & CAT_OCUP==4 ~ 5,
+                               go==3 & CAT_OCUP==NA ~ 5,
+         
+                               go==4 & CAT_OCUP==1 & tamano==2  ~ 9,    
+                               go==4 & CAT_OCUP==1 & tamano==1  ~ 13,   
+                               go==4 & CAT_OCUP==3 & sector_act==1 & tamano==2  ~ 10,   
+                               go==4 & CAT_OCUP==3 & sector_act==1 & is.na(tamano)  ~ 10,   
+                               go==4 & CAT_OCUP==3 & sector_act==1 & tamano==1  ~ 11,   
+                               go==4 & CAT_OCUP==3 & sector_act==2 ~ 12,
+                               go==4 & CAT_OCUP==2  ~ 14,   
+                               go==4 & CAT_OCUP==4  ~ 14,   
+                               go==4 & CAT_OCUP== NA ~ 14,
+         
+                               go==5 & CAT_OCUP==1 & tamano==2 ~ 9,
+                               go==5 & CAT_OCUP==1 & tamano==1 ~ 13,
+                               go==5 & CAT_OCUP==3 & sector_act==1 & tamano==2 ~ 15,
+                               go==5 & CAT_OCUP==3 & sector_act==1 & is.na(tamano) ~ 15,
+                               go==5 & CAT_OCUP==3 & sector_act==1 & tamano==1 ~ 16,
+                               go==5 & CAT_OCUP==3 & sector_act==2  ~ 17,
+                               go==5 & CAT_OCUP==2  ~ 14,
+                               go==5 & CAT_OCUP==4 ~ 14,
+                               go==5 & CAT_OCUP== NA ~ 14,
+         
+                               go==6 & CAT_OCUP==1 & tamano==2  ~ 9,
+                               go==6 & CAT_OCUP==1 & tamano==1  ~ 13,
+                               go==6 & CAT_OCUP==3 & sector_act==1 & tamano==2 ~ 19,
+                               go==6 & CAT_OCUP==3 & sector_act==1 & is.na(tamano)  ~ 19,
+                               go==6 & CAT_OCUP==3 & sector_act==1 & tamano==1 ~ 20,
+                               go==6 & CAT_OCUP==3 & sector_act==2 ~ 21,
+                               go==6 & CAT_OCUP==2  ~ 18,
+                               go==6 & CAT_OCUP==4  ~ 18,
+                               go==6 & CAT_OCUP== NA    ~ 18,
+         
+                               go==7 & CAT_OCUP==1 & tamano==2  ~ 25,
+                               go==7 & CAT_OCUP==1 & tamano==1  ~ 25,
+                               go==7 & CAT_OCUP==3 & sector_act==1 & tamano==2  ~ 22,
+                               go==7 & CAT_OCUP==3 & sector_act==1 & is.na(tamano) ~ 22,
+                               go==7 & CAT_OCUP==3 & sector_act==1 & tamano==1  ~ 23,
+                               go==7 & CAT_OCUP==3 & sector_act==2  ~ 24,
+                               go==7 & CAT_OCUP==4  ~ 25,
+                               go==7 & CAT_OCUP==2  ~ 25,
+                               go==7 & CAT_OCUP== NA    ~ 25,
+                              
+                            go==8 ~ 26,
+                            go==9   ~ 27))
+```
+
+
+## [Paso 5]{style="color:#75E225"}: Creación del CSO agregado
+
+. . .
+
+Crearemos una variable que se llame **cso_agg**
+
+. . .
+
+```{r}
+eph_419 <- eph_419 %>% 
+  mutate(cso_agg = case_when(cso_desag <=2 ~ 1,
+                             cso_desag >=3 & cso_desag <=8 ~ 2,
+                             cso_desag ==9 ~ 3,
+                             cso_desag >=10 & cso_desag <=12 ~ 4,
+                             cso_desag >=13 & cso_desag <=14 ~ 5,
+                             cso_desag >=15 & cso_desag <=17 ~ 6,
+                             cso_desag ==18 ~ 7,
+                             cso_desag >=19 & cso_desag <=21 ~ 8,
+                             cso_desag >=22 & cso_desag <=24 ~ 9,
+                             cso_desag ==25 ~ 10,
+                             cso_desag ==26 ~ 11,
+                             cso_desag ==27 | is.na(cso_desag) ~ NA_real_))
+```
+
+
+## [Paso 6]{style="color:#75E225"}: El esquema final (I)
+
+::: {style="font-size: 0.8em"}
+:::fragment
+
+¡Ya estamos en condiciones de elaborar el sistema de clases que la autora propone! 
+:::
+
+:::fragment
+Con la función *factor* crearemos una variable factor etiquetando el esquema de clases.
+:::
+
+:::
+
+:::fragment
+
+```{r}
+eph_419 <- eph_419 %>% 
+  mutate(clase6 = case_when(cso_agg == 1 ~ 1,
+                                                    (cso_agg == 2 & CAT_OCUP == 2) | cso_agg == 3 | cso_agg == 5 ~ 2,
+                                                    (cso_agg == 2 & CAT_OCUP >= 3) | cso_agg == 4 | cso_agg == 6 ~ 3,
+                                                    cso_agg == 7 ~ 4,
+                                                    cso_agg == 8 | cso_agg == 9 ~ 5,
+                                                    cso_agg == 10 | cso_agg == 11 ~ 6))
+
+eph_419$clase6_factor <- factor(eph_419$clase6, labels = c("Clase alta", 
+                                                           "Clase media - autónoma",
+                                                           "Clase media -asalariada",
+                                                           "Clase obrera - autónoma",
+                                                           "Clase obrera - asalariada",
+                                                           "Clase obrera - trabajadores marginales"))  
+
+```
+
+:::
+
+## Distribuciones de frecuencias (`dplyr`)
+
+::: {style="font-size: 0.8em"}
+:::incremental
+
+- Con la variable ya construida tenemos dos formas (entre muchas) para realizar una distribución de frecuencia con los datos ponderados.
+
+- En primer lugar mostraremos el ejemplo utilizando funciones del paquete `dplyr` del `tidyverse`.
+
+:::
+
+<br>
+
+:::fragment
+
+```{r}
+#| code-line-numbers: "|2|3|4|5"
+#| output-location: fragment
+eph_419 %>%
+    filter(!is.na(clase6_factor)) %>% #quitamos los casos perdidos del análisis 
+    group_by(clase6_factor) %>% #agrupamos los datos por clase
+    tally(PONDERA) %>% #hacemos un conteo ponderado
+    mutate(porcentaje = round((n/sum(n))*100, digits = 2)) #calculamos el porcentaje
+```
+
+:::
+:::
+
+
+## Distribuciones de frecuencias (`summarytools`)
+
+. . .
+
+También podemos utilizar la función **freq** del paquete `summarytools`, que debemos instalarlo previamente.
+
+. . .
+ 
+```{r}
+#| output-location: fragment
+
+library(summarytools)
+
+freq(eph_419$clase6_factor, weights = eph_419$PONDERA, cumul = FALSE, report.nas = FALSE)
+```
+
+
+# 6. Explorando resultados. Tablas y gráficos {background-color="#93a1a1"}
+
+## Clases e ingresos (I)
+
+::: {style="font-size: 0.8em"}
+:::incremental
+- Tomando como variable dependiente los ingresos totales individuales (*P47T*), calcularemos el promedio por clase social.
+
+- Para ello utilizaremos algunas funciones del paquete `dplyr` y de `R` base como *weighted.mean*.
+:::
+:::
+
+:::fragment
+```{r}
+#| code-line-numbers: "|1|2|3|4"
+#| output-location: fragment
+eph_419 %>% 
+  filter(!is.na(clase6_factor)) %>%  # Quitamos los casos que no tienen clase social
+  group_by(clase6_factor) %>% # Agrupamos por clase
+  summarise(media = weighted.mean(P47T, w = PONDII)) # Calculamos el promedio ponderado
+```
+:::
+
+## Clases e ingresos (II)
+
+::: {style="font-size: 0.8em"}
+:::incremental
+- Otra forma de observar las desigualdades es a través de gráficos
+
+- En este caso, a través del paquete `ggplot2` del `tidyverse`, construiremos paso a paso un diagrama de cajas y bigotes (*boxplot*).
+:::
+:::
+
+:::fragment
+```{r}
+#| output-location: slide
+#| code-line-numbers: "|2|3|4|5-7|8-13|14|15"
+
+eph_419 %>%
+  filter(!is.na(clase6_factor), P47T < 150000) %>% 
+  ggplot(aes(x=clase6_factor, y=P47T, fill=clase6_factor, weight = PONDII)) +
+  geom_boxplot(outlier.alpha = 0.1, show.legend = FALSE) +
+  labs(title = "Ingresos totales individuales por clase social. Argentina urbana 2019",
+    y = "Ingresos totales individuales",
+       caption = "Elaboración propia en base a EPH-INDEC 2019") +
+  theme(plot.caption = element_text(size = 10),
+        plot.title = element_text(size = 14),
+        axis.title.x = element_blank(),
+        axis.title.y = element_text(size = 12),
+        axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 12)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 20)) +
+  scale_y_continuous(breaks=seq(0, 150000, 10000))
+```
+:::
+
+## Las clases en el tiempo (I)
+
+
+::: {style="font-size: 0.8em"}
+:::incremental
+1. Podemos analizar como ha evolucionado la estructura de clases en su composición 
+
+2. Para ello, vamos a descargar las bases de la **EPH** del tercer trimestre entre 2018 y 2022. 
+:::
+
+:::fragment
+
+```{r}
+#| output-location: fragment
+#| code-line-numbers: "|1|3|"
+
+
+eph_1822 <- get_microdata(year = 2018:2022, trimester = 3, type = "individual") # Descargamos el pool de bases
+
+table(eph_1822$ANO4) # Exploramos los casos por año
+```
+
+:::
+
+:::incremental
+3. Luego aplicaremos el script para la creación del sistema de clases sociales a esta nueva base.
+
+```{r echo=F, warning=F, message=F}
+eph_1822$cno <- str_pad(eph_1822$PP04D_COD, 5, pad = "0")
+
+eph_1822$cno12 <- str_sub(eph_1822$cno, 1, 2) 
+eph_1822$cno3 <- str_sub(eph_1822$cno, 3, 3) 
+eph_1822$cno4 <- str_sub(eph_1822$cno, 4, 4)
+eph_1822$cno5 <- str_sub(eph_1822$cno, 5, 5)
+
+eph_1822$cno12 <- as.numeric(eph_1822$cno12)
+eph_1822$cno3 <- as.numeric(eph_1822$cno3)
+eph_1822$cno4 <- as.numeric(eph_1822$cno4)
+eph_1822$cno5 <- as.numeric(eph_1822$cno5)
+
+
+eph_1822 <- eph_1822 %>%  
+  mutate(go = case_when((cno12 >= 0 & cno12 <=4) | (cno12 == 7) ~ 1,
+                        
+                        (cno12 >= 5 & cno12 <=6) ~ 2,
+                        
+                        (cno5 == 1) & ((cno12 >= 10 & cno12 <= 20) | 
+                        (cno12 == 32) | (cno12 >= 34 & cno12 <= 40) |
+                        (cno12 >= 42 & cno12 <= 47) | (cno12 >= 49 & cno12 <= 54) | 
+                        (cno12 >= 60 & cno12 <= 64) | (cno12 >= 70 & cno12 <= 92)) ~ 3,
+                        
+                        (cno5 > 4) & (cno12 == 11 | cno12 == 42 | cno12 == 43 | 
+                        cno12 == 50 | cno12 == 70 | cno12 == 81 | cno12 == 91) ~ 3,
+                        
+                        (cno5 == 2) & ((cno12 >= 10 & cno12 <= 32) | (cno12 >= 34 & cno12 <= 54) | 
+                        (cno12 >= 56 & cno12 <= 92)) ~ 4,
+                        
+                        (cno5 == 1) & ((cno12 == 30 | cno12 == 31 | cno12 == 41 | cno12 == 48) | 
+                        (cno12 >= 56 & cno12 <= 58) | (cno12 == 65)) ~ 4,
+                        
+                        (cno5 == 3) & (cno12 == 40 | cno12 == 42 | cno12 == 43 | cno12 == 45 | 
+                        cno12 == 91) ~ 4,
+                        
+                        (cno5 == 4) & (cno12 == 42 | cno12 == 43 | cno12 == 45) ~ 4,
+                        
+                        (cno5 > 4) & (cno12 == 40 | cno12 == 41 | cno12 == 44 | cno12 == 45 | 
+                        cno12 == 46 | cno12 == 51 | cno12 == 92) ~ 4,
+                        
+                        (cno5 == 3) & ((cno12 >= 10 & cno12 <= 32) | (cno12 == 35) | (cno12 == 41) | 
+                        (cno12 == 54) | (cno12 == 81)) ~ 5,
+                        
+                        (cno5 == 4) & ((cno12 >= 10 & cno12 <= 11) | (cno12 >= 30 & cno12 <= 32) | 
+                        (cno12 == 35)) ~ 5,
+                        
+                        (cno5 > 4) & ((cno12 == 10) | (cno12 >= 20 & cno12 <= 32) | (cno12 == 35)) ~ 5,
+                        
+                        (cno5 == 1 | cno5 == 2) & (cno12 == 55) ~ 6,
+                        
+                        (cno5 == 3) & ((cno12 == 34) | (cno12 == 36) | (cno12 == 44) | 
+                        (cno12 >= 46 & cno12 <= 53) | (cno12 >= 55 & cno12 <= 80) | 
+                        (cno12 == 82) | (cno12 == 90) | (cno12 == 92)) ~ 6,
+                        
+                        (cno5 == 4) & ((cno12 == 44) | (cno12 == 49) | (cno12 == 53) | (cno12 == 57)) ~ 6,
+                        
+                        (cno5 > 4) & ((cno12 == 34) | (cno12 >= 47 & cno12 <= 49) | (cno12 >= 52 & cno12 <= 54) | (cno12 >= 57 & cno12 <= 65) | (cno12 >= 71 & cno12 <= 80) | (cno12 >= 82 & cno12 <= 90)) ~ 6,
+                        
+                        (cno12 == 33)   ~ 7,
+                        
+                        (cno5 == 4 | cno5 == 9) & ((cno12 == 20) | (cno12 == 34) | 
+                        (cno12 >= 36 & cno12 <= 41) | (cno12 >= 46 & cno12 <= 48) |
+                        (cno12 >= 50 & cno12 <= 52) | (cno12 == 54) | (cno12 == 56) | 
+                        (cno12 >= 58 & cno12 <= 92)) ~ 7,
+                        
+                        (cno5 >= 4) & (cno12 == 55) ~ 8
+                        
+                        ,(cno12 == 99) | (is.na(cno12)) ~ 9))
+
+
+eph_1822 <- eph_1822 %>% 
+    mutate(sector_act = car::recode(eph_1822$PP04A, "1=2; 2:3=1")) 
+
+eph_1822 <- eph_1822 %>% 
+  mutate(tamano = case_when((PP04C > 0 & PP04C <= 5) | (PP04C == 99 & PP04C99 == 1) ~ 1,
+                            (PP04C > 5 & PP04C < 99) | (PP04C == 99 & PP04C99 >= 2) ~ 2,
+                            PP04C == 0 | PP04C99 == 0 ~ NA_real_
+                            )) 
+
+eph_1822 <- eph_1822 %>% 
+  mutate(cso_desag = case_when(go==1 & CAT_OCUP==1 & tamano==2 ~ 1, 
+                               go==1 & CAT_OCUP==1 & tamano==1 ~ 13, 
+                               go==1 & CAT_OCUP==3 & sector_act==1 & tamano==2 ~ 2, 
+                               go==1 & CAT_OCUP==3 & sector_act==1 & is.na(tamano) ~ 2, 
+                               go==1 & CAT_OCUP==3 & sector_act==1 & tamano==1 ~ 11, 
+                               go==1 & CAT_OCUP==3 & sector_act==2 ~ 1,
+                               go==1 & CAT_OCUP==2 ~ 14,
+                               go==1 & CAT_OCUP==4 ~ 14,
+                               go==1 & CAT_OCUP==NA ~ 14,
+                               
+                               go==2 & CAT_OCUP==1 & tamano==2 ~ 9,
+                               go==2 & CAT_OCUP==1 & tamano==1  ~ 13,
+                               go==2 & CAT_OCUP==3 & sector_act==1 & tamano==2 ~ 10,
+                               go==2 & CAT_OCUP==3 & sector_act==1 & is.na(tamano) ~ 10,
+                               go==2 & CAT_OCUP==3 & sector_act==1 & tamano==1  ~ 11,
+                               go==2 & CAT_OCUP==3 & sector_act==2  ~ 12,
+                               go==2 & CAT_OCUP==2  ~ 14,
+                               go==2 & CAT_OCUP==4  ~ 14,
+                               go==2 & CAT_OCUP==NA     ~ 14,
+         
+                               go==3 & CAT_OCUP==1 & tamano==2 ~ 3,
+                               go==3 & CAT_OCUP==1 & tamano==1 ~ 4,
+                               go==3 & CAT_OCUP==3 & sector_act==1 & tamano==2 ~ 6,
+                               go==3 & CAT_OCUP==3 & sector_act==1 & is.na(tamano) ~ 6,
+                               go==3 & CAT_OCUP==3 & sector_act==1 & tamano==1  ~ 7,
+                               go==3 & CAT_OCUP==3 & sector_act==2 ~ 8,
+                               go==3 & CAT_OCUP==2 ~ 5,
+                               go==3 & CAT_OCUP==4 ~ 5,
+                               go==3 & CAT_OCUP==NA ~ 5,
+         
+                               go==4 & CAT_OCUP==1 & tamano==2  ~ 9,    
+                               go==4 & CAT_OCUP==1 & tamano==1  ~ 13,   
+                               go==4 & CAT_OCUP==3 & sector_act==1 & tamano==2  ~ 10,   
+                               go==4 & CAT_OCUP==3 & sector_act==1 & is.na(tamano)  ~ 10,   
+                               go==4 & CAT_OCUP==3 & sector_act==1 & tamano==1  ~ 11,   
+                               go==4 & CAT_OCUP==3 & sector_act==2 ~ 12,
+                               go==4 & CAT_OCUP==2  ~ 14,   
+                               go==4 & CAT_OCUP==4  ~ 14,   
+                               go==4 & CAT_OCUP== NA ~ 14,
+         
+                               go==5 & CAT_OCUP==1 & tamano==2 ~ 9,
+                               go==5 & CAT_OCUP==1 & tamano==1 ~ 13,
+                               go==5 & CAT_OCUP==3 & sector_act==1 & tamano==2 ~ 15,
+                               go==5 & CAT_OCUP==3 & sector_act==1 & is.na(tamano) ~ 15,
+                               go==5 & CAT_OCUP==3 & sector_act==1 & tamano==1 ~ 16,
+                               go==5 & CAT_OCUP==3 & sector_act==2  ~ 17,
+                               go==5 & CAT_OCUP==2  ~ 14,
+                               go==5 & CAT_OCUP==4 ~ 14,
+                               go==5 & CAT_OCUP== NA ~ 14,
+         
+                               go==6 & CAT_OCUP==1 & tamano==2  ~ 9,
+                               go==6 & CAT_OCUP==1 & tamano==1  ~ 13,
+                               go==6 & CAT_OCUP==3 & sector_act==1 & tamano==2 ~ 19,
+                               go==6 & CAT_OCUP==3 & sector_act==1 & is.na(tamano)  ~ 19,
+                               go==6 & CAT_OCUP==3 & sector_act==1 & tamano==1 ~ 20,
+                               go==6 & CAT_OCUP==3 & sector_act==2 ~ 21,
+                               go==6 & CAT_OCUP==2  ~ 18,
+                               go==6 & CAT_OCUP==4  ~ 18,
+                               go==6 & CAT_OCUP== NA    ~ 18,
+         
+                               go==7 & CAT_OCUP==1 & tamano==2  ~ 25,
+                               go==7 & CAT_OCUP==1 & tamano==1  ~ 25,
+                               go==7 & CAT_OCUP==3 & sector_act==1 & tamano==2  ~ 22,
+                               go==7 & CAT_OCUP==3 & sector_act==1 & is.na(tamano) ~ 22,
+                               go==7 & CAT_OCUP==3 & sector_act==1 & tamano==1  ~ 23,
+                               go==7 & CAT_OCUP==3 & sector_act==2  ~ 24,
+                               go==7 & CAT_OCUP==4  ~ 25,
+                               go==7 & CAT_OCUP==2  ~ 25,
+                               go==7 & CAT_OCUP== NA    ~ 25,
+                              
+                            go==8 ~ 26,
+                            go==9   ~ 27))
+
+eph_1822 <- eph_1822 %>% 
+  mutate(cso_agg = case_when(cso_desag <=2 ~ 1,
+                             cso_desag >=3 & cso_desag <=8 ~ 2,
+                             cso_desag ==9 ~ 3,
+                             cso_desag >=10 & cso_desag <=12 ~ 4,
+                             cso_desag >=13 & cso_desag <=14 ~ 5,
+                             cso_desag >=15 & cso_desag <=17 ~ 6,
+                             cso_desag ==18 ~ 7,
+                             cso_desag >=19 & cso_desag <=21 ~ 8,
+                             cso_desag >=22 & cso_desag <=24 ~ 9,
+                             cso_desag ==25 ~ 10,
+                             cso_desag ==26 ~ 11,
+                             cso_desag ==27 | is.na(cso_desag) ~ NA_real_))
+
+eph_1822 <- eph_1822 %>% 
+  mutate(clase6 = case_when(cso_agg == 1 ~ 1,
+                                                    (cso_agg == 2 & CAT_OCUP == 2) | cso_agg == 3 | cso_agg == 5 ~ 2,
+                                                    (cso_agg == 2 & CAT_OCUP >= 3) | cso_agg == 4 | cso_agg == 6 ~ 3,
+                                                    cso_agg == 7 ~ 4,
+                                                    cso_agg == 8 | cso_agg == 9 ~ 5,
+                                                    cso_agg == 10 | cso_agg == 11 ~ 6))
+
+eph_1822$clase6_factor <- factor(eph_1822$clase6, labels = c("Clase alta", 
+                                                           "Clase media - autónoma",
+                                                           "Clase media -asalariada",
+                                                           "Clase obrera - autónoma",
+                                                           "Clase obrera - asalariada",
+                                                           "Clase obrera - trabajadores marginales"))  
+```
+
+
+4. A continuación mostraremos los resultados en una tabla cruzada y en un gráfico de barras apiladas.
+
+:::
+:::
+
+
+## Las clases en el tiempo (III)
+
+:::{style="font-size: 0.8em"}
+:::{incremental}
+- Podemos construir la tabla usando las funciones del paquete `dplyr`.
+
+- La función *spread* permite pasar a un formato ancho de tabla.
+
+:::
+:::
+
+:::fragment
+
+```{r}
+#| output-location: fragment
+#| code-line-numbers: "|1|2|3|4|5|6|7|8|"
+
+eph_1822 %>%
+  filter(!is.na(clase6_factor)) %>% #Filtramos a los que no tienen clase
+  group_by(ANO4, clase6_factor) %>% #Agrupamos por año y clase
+  tally(wt=PONDERA) %>% #Calculamos la frecuencias ponderadas
+  group_by(ANO4) %>% #Agrupamos por año
+  mutate(percent = round((n/sum(n))*100, digits = 2)) %>% #Calculamos el porcentaje de clase por año
+  select(clase6_factor, ANO4, percent) %>% #Seleccionamos las columnas con las que nos quedaremos
+  spread(ANO4, value = percent) #Cambiamos a formato ancho de tabla
+```
+
+:::
+
+## Las clases en el tiempo (IV)
+
+:::: {style="font-size: 0.8em"}
+
+:::fragment
+
+Otra opción de presentación es la elaboración de un gráfico de barras. Para ello recurriremos al paquete `ggplot2` y a la función *geom_col*.
+
+:::
+
+:::fragment
+
+```{r}
+#| code-line-numbers: "|2-6|7|8|9|10|11-14|15-23|24-25|"
+#| output-location: slide
+
+eph_1822 %>%
+  filter(!is.na(clase6_factor)) %>% #Aplicamos los mismos pasos que para el cuadro
+  group_by(ANO4, clase6_factor) %>% 
+  tally(wt=PONDERA) %>% 
+  group_by(ANO4) %>% 
+  mutate(percent = round((n/sum(n))*100, digits = 2)) %>% 
+  ggplot(mapping = aes(x = ANO4, y = percent, fill = clase6_factor)) + #Indicamos qué variables tomará el gráfico
+  geom_col() + #Usaremos columnas
+  geom_text(aes(label = percent), position = position_stack(.5), size = 3) + #Agregamos los porcentajes en las columnas
+  scale_fill_discrete(labels = function(x) str_wrap(x, width = 25)) +
+  labs(title = "Evolución de la estructura de clases sociales",
+       subtitle = "Población ocupada. Argentina urbana 2018-2022.",
+       caption = "Fuente: Elaboración propia en base a EPH-INDEC 2018-2022.",
+       fill = "Clase social") +
+  theme(legend.title = element_text(size = 10, face = "bold"),
+        legend.text = element_text(size = 11),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text.y = element_text(size = 10),
+        axis.text.x = element_text(size = 10),
+        plot.title = element_text(size = 14, face = "bold"),
+        plot.subtitle = element_text(size = 12),
+        plot.caption = element_text(size = 10, hjust = 1)) +
+  scale_x_continuous(breaks = c(2018:2022)) +
+  scale_y_continuous(breaks=seq(0, 100, 10))
+```
+
+:::
+:::
+
+## Otros ejemplos de gráficos (I)
+
+::: {style="text-align: center"}
+![](imagenes/evol_pobreza_sem.jpg){width=70% height=70%}
+:::
+
+
+## Otros ejemplos de gráficos (II)
+
+::: {style="text-align: center"}
+![](imagenes/barras_subjetiva_wvs.jpg){width=70% height=70%}
+:::
+
+## Otros ejemplos de gráficos (III)
+
+::: {style="text-align: center"}
+![](imagenes/caba_prop.png){width=70% height=70%}
+:::
+
+
+## Otros ejemplos de gráficos (IV)
+
+::: {style="text-align: center"}
+![](imagenes/transiciones.jpg){width=70% height=70%}
+:::
+
+# 7. Dudas y consultas {background-color="#93a1a1"}
