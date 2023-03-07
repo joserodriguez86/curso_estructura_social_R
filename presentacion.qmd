@@ -1,7 +1,9 @@
 ---
 title: "Introducción al estudio de la estructura social a partir de R"
+subtitle: "III Jornadas de Sociología - Universidad Nacional de Mar del Plata"
 author: "José Rodríguez de la Fuente"
-institute: "Instituto de Investigaciones Gino Germani (UBA-CONICET)"
+institute: "Instituto de Investigaciones Gino Germani (UBA-CONICET)" 
+date: "15 03 2023"
 format: 
   revealjs:
     theme: [moon, custom.scss]
@@ -166,7 +168,7 @@ Fuente: <https://sites.google.com/a/nyu.edu/statistical-software-guide/summary>
 2. Debemos instalar [`RStudio`](http://www.rstudio.com/download)
     + Es un ambiente de desarrollo integrado (IDE) para programar en `R` 
     
-3. Recomendación de actualizar ambos programa periódicamente
+3. Recomendación de actualizar ambos programas periódicamente
   
 :::
 
@@ -348,7 +350,7 @@ Listas, *data frames*, gráficos, funciones, mapas y muchas cosas más.
 ::: incremental
 
 - **Pipa** (` %>% `): [permite concatenar una secuencia de acciones sobre un objeto]{.fragment .fade-in}
-    + Pertenece al paquete `dplyr` que está en `tidyverse`
+    + Pertenece al paquete `magrittr` que está en `tidyverse`
     
 :::
 
