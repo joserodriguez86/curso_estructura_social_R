@@ -12,3 +12,4 @@ knitr
 kableExtra
 flextable
 summarytools
+lubridate

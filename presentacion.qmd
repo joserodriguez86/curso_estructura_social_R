@@ -1,5 +1,5 @@
 ---
-title: "Introducción al estudio de la estructura social a partir de R"
+title: "Introducción al estudio de la estructura social a partir de `R`"
 subtitle: "III Jornadas de Sociología - Universidad Nacional de Mar del Plata"
 author: "José Rodríguez de la Fuente"
 institute: "Instituto de Investigaciones Gino Germani (UBA-CONICET)" 
@@ -26,8 +26,8 @@ knitr::opts_chunk$set(dev.args = list(png = list(type = "cairo")))
 
 ::: incremental
 1.  ¿Qué es la estructura social?
-2.  ¿Por qué usar R?
-3.  Introducción (breve) a R
+2.  ¿Por qué usar `R`?
+3.  Introducción (breve) a `R`
 4.  Trabajando con encuestas de hogares: EPH
 5.  Construyendo variables: las clases sociales
 6.  Explorando resultados. Tablas y gráficos
@@ -1109,7 +1109,7 @@ eph_419 <- eph_419 %>%
 ```{r}
 #| code-line-numbers: "|1-2|4-7|"
 eph_419 <- eph_419 %>% 
-    mutate(sector_act = car::recode(eph_419$PP04A, "1=2; 2:3=1")) 
+    mutate(sector_act = car::recode(PP04A, "1=2; 2:3=1")) 
 
 eph_419 <- eph_419 %>% 
   mutate(tamano = case_when((PP04C > 0 & PP04C <= 5) | (PP04C == 99 & PP04C99 == 1) ~ 1,
@@ -1707,27 +1707,27 @@ eph_1822 %>%
 ## Otros ejemplos de gráficos (I)
 
 ::: {style="text-align: center"}
-![](imagenes/evol_pobreza_sem.jpg){width=70% height=70%}
+![Evolución de la pobreza por clase social. Argentina Urbana 2016-2021](imagenes/evol_pobreza_sem.jpg){width=70% height=70%}
 :::
 
 
 ## Otros ejemplos de gráficos (II)
 
 ::: {style="text-align: center"}
-![](imagenes/barras_subjetiva_wvs.jpg){width=70% height=70%}
+![Percepción de clase social en Argentina. 1995-2017](imagenes/barras_subjetiva_wvs.jpg){width=70% height=70%}
 :::
 
 ## Otros ejemplos de gráficos (III)
 
 ::: {style="text-align: center"}
-![](imagenes/caba_prop.png){width=70% height=70%}
+![Porcentaje de hogares propietarios de la vivienda según clase social. CABA 2015.](imagenes/caba_prop.png){width=70% height=70%}
 :::
 
 
 ## Otros ejemplos de gráficos (IV)
 
 ::: {style="text-align: center"}
-![](imagenes/transiciones.jpg){width=70% height=70%}
+![Transiciones de clase. Argentina urbana, 1er y 2do trimestre 2020 - 2021. Población mayor de 18 años.](imagenes/transiciones.jpg){width=70% height=70%}
 :::
 
 # 7. Dudas y consultas {background-color="#93a1a1"}
